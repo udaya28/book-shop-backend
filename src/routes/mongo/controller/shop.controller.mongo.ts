@@ -2,7 +2,6 @@ import { Response, Request } from 'express';
 import { shopMongo } from './../../../interfaces/index';
 import { ValidateInsertShopMongo } from '../validator/shop.validator.mongo';
 import { ShopDB } from './../../../model/mongo/shop.model.mongo';
-import { GetBookByIdMongo } from './book.controller.mongo';
 import { BookDB } from './../../../model/mongo/books.model.mongo';
 import { isValidMongoId } from './../../../util/util';
 
@@ -78,6 +77,46 @@ class ShopControllerMongo {
         }
     }
 
+    public static updateShopBookById = async (req: Request, res: Response) => {
+        let response: any;
+        try {
+            const { error } = ValidateInsertShopMongo(req.body)
+            if (error) {
+                return res.send(error.message).status(500).end();
+            }
+            const id = req.params.id;
+            const count = req.body.data.count;
+            const bookId = req.body.data.bookId;
+            if (!isValidMongoId(id)) {
+                return res.send("Invalid Id").status(200)
+            }
+            if (!isValidMongoId(bookId)) {
+                return res.send("Invalid Id").status(200)
+            }
+            const result = await Promise.all([await ShopDB.findOne({ _id: id }), BookDB.findOne({ _id: bookId })])
+            const shop: any = result[0]
+            if (!shop || shop.length == 0) {
+                return res.send({ ResponseMessage: "Shop Id not found" });
+            }
+            const book: any = result[1]
+            if (!book || book.length == 0) {
+                return res.send({ ResponseMessage: "Book Id not found" });
+            }
+            const updatedShop = await ShopDB.updateOne({ _id: id }, {
+                count,
+                book: bookId,
+            });
+            response = {
+                ResponseData: updatedShop,
+                ResponseMessage: 'Shop Updated',
+            }
+        } catch (error) {
+            console.log(error);
+            return res.status(500).end();
+        }
+        return res.send(response).status(200);
+    }
+
     public static deleteShopBookById = async (req: Request, res: Response) => {
         let response: any;
 
@@ -104,11 +143,12 @@ const GetAllShopBookMongo = ShopControllerMongo.getAllShopBook;
 const GetShopBookByIdMongo = ShopControllerMongo.getShopBookById;
 const InsertShopBookMongo = ShopControllerMongo.insertShopBook;
 const DeleteShopBookByIdMongo = ShopControllerMongo.deleteShopBookById
-
+const UpdateShopBookByIdMongo = ShopControllerMongo.updateShopBookById
 export {
     GetAllShopBookMongo,
     GetShopBookByIdMongo,
     InsertShopBookMongo,
-    DeleteShopBookByIdMongo
+    DeleteShopBookByIdMongo,
+    UpdateShopBookByIdMongo
 }
 
