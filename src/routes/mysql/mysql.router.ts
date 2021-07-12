@@ -1,7 +1,7 @@
 import * as express from "express";
 import { InsertAuthor, GetAllAuthor, GetAuthorById, DeleteAuthorById, UpdateAuthorById } from "./controller/author.controller";
 import { DeleteGenreById, GetAllGenre, GetGenreById, InsertGenre, UpdateGenreById } from "./controller/genre.controller";
-import { GetAllBook, GetBookById, InsertBook, DeleteBookById } from "./controller/book.controller";
+import { GetAllBook, GetBookById, InsertBook, DeleteBookById, UpdateBookById } from "./controller/book.controller";
 import { DeleteGenreListByBookId, GetAllGenreList, GetGenreListByBookId, InsertGenreListWithBookId } from "./controller/genreList.controller";
 import { DeleteShopBookById, GetAllBooksFromShop, GetShopBookById, InsertBookIntoStore, UpdateStoreBookById } from "./controller/shop.controller";
 
@@ -36,6 +36,7 @@ class MySql {
         this.router.get('/book', GetAllBook)
         this.router.get('/book/:id', GetBookById)
         this.router.post('/book', InsertBook)
+        this.router.patch('/book/:id', UpdateBookById)
         this.router.delete('/book/:id', DeleteBookById)
 
         this.router.get('/shop', GetAllBooksFromShop)

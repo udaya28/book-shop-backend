@@ -8,7 +8,7 @@ class BookValidation {
             data: {
                 title: Joi.string().required(),
                 price: Joi.number().required(),
-                authorName: Joi.string().required(),
+                authorId: Joi.number().required(),
                 genreIdArray: Joi.required()
             },
         });
