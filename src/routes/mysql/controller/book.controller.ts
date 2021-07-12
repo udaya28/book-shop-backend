@@ -12,10 +12,10 @@ class BookController {
     public static getAllBook = async (req: Request, res: Response) => {
         let response;
         try {
-            const author = await BookSqlModel.getAllBook();
+            const books = await BookSqlModel.getAllBook();
             const genreList = await GenreListSqlModel.getAllGenreList()
             response = {
-                ResponseData: author,
+                ResponseData: books,
                 ResponseMessage: 'All Book Fetched',
             }
         } catch (error) {
@@ -32,9 +32,9 @@ class BookController {
         }
         let response;
         try {
-            const author = await BookSqlModel.getBookById(id);
+            const book = await BookSqlModel.getBookById(id);
             response = {
-                ResponseData: author,
+                ResponseData: book,
                 ResponseMessage: 'Book Fetched',
             }
         } catch (error) {

@@ -2,7 +2,7 @@ import { Response, Request } from 'express';
 import { BookMongo } from './../../../interfaces/index';
 import { ValidateInsertBookMongo } from '../validator/book.validator.mongo';
 import { BookDB } from './../../../model/mongo/books.model.mongo';
-import { isValidId } from './../../../util/util';
+import { isValidMongoId } from './../../../util/util';
 
 class BookControllerMongo {
     constructor() { }
@@ -28,6 +28,9 @@ class BookControllerMongo {
 
         try {
             const id = req.params.id;
+            if (!isValidMongoId(id)) {
+                return res.send("Invalid Id").status(200)
+            }
             const book: Array<BookMongo> = await BookDB.find({ _id: id });
             response = {
                 ResponseData: book,
@@ -52,13 +55,6 @@ class BookControllerMongo {
             const authorCountry = req.body.data.authorCountry;
             const genre = req.body.data.genre;
             let response: any;
-            console.log({
-                title,
-                price,
-                authorName,
-                authorCountry,
-                genre
-            })
             const user = await BookDB.create({
                 title,
                 price,
@@ -81,10 +77,12 @@ class BookControllerMongo {
 
     public static deleteBookById = async (req: Request, res: Response) => {
         let response: any;
-
         try {
             const id = req.params.id;
-            const book:any = await BookDB.deleteOne({ _id: id });
+            if (!isValidMongoId(id)) {
+                return res.send("Invalid Id").status(200)
+            }
+            const book: any = await BookDB.deleteOne({ _id: id });
             response = {
                 ResponseData: book,
                 ResponseMessage: 'Book Deleted',

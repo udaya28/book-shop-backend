@@ -1,5 +1,6 @@
 import * as express from "express";
 import { GetAllBookMongo, InsertBookMongo, GetBookByIdMongo, DeleteBookByIdMongo } from "./controller/book.controller.mongo";
+import { GetAllShopBookMongo, DeleteShopBookByIdMongo, GetShopBookByIdMongo, InsertShopBookMongo } from "./controller/shop.controller.mongo";
 
 class Mongo {
     public router: express.Router;
@@ -15,11 +16,11 @@ class Mongo {
         this.router.post('/book', InsertBookMongo)
         this.router.delete('/book/:id', DeleteBookByIdMongo)
 
-        // this.router.get('/shop', GetAllBooksFromShop)
-        // this.router.get('/shop/:id', GetShopBookById)
-        // this.router.post('/shop', InsertBookIntoStore)
+        this.router.get('/shop', GetAllShopBookMongo)
+        this.router.get('/shop/:id', GetShopBookByIdMongo)
+        this.router.post('/shop', InsertShopBookMongo)
         // this.router.patch('/shop/:id', UpdateStoreBookById)
-        // this.router.delete('/shop/:id', DeleteShopBookById)
+        this.router.delete('/shop/:id', DeleteShopBookByIdMongo)
     }
 
 

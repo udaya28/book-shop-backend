@@ -8,7 +8,7 @@ const ShopMongo = new Schema({
         type: Number,
         required: true,
     },
-    book: [{ type: Schema.Types.ObjectId, ref: 'book' }]
+    book: { type: Schema.Types.ObjectId, ref: 'book', required: true, }
 })
 
 const ShopDB: Model<shopMongo> = mongoose.model('shop', ShopMongo);
