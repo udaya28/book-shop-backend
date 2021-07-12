@@ -2,7 +2,7 @@ import { AuthorSqlModel } from './../../../model/mysql/authors.model';
 import { Response, Request } from 'express';
 import { isValidId } from './../../../util/util';
 import { BookSqlModel } from './../../../model/mysql/books.model';
-import { ValidateInsertBook } from './../../../validator/book.validator';
+import { ValidateInsertBook } from '../validator/book.validator';
 import { GenreListSqlModel } from './../../../model/mysql/genresList.model';
 class BookController {
     constructor() {

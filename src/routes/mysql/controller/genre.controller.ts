@@ -1,7 +1,7 @@
 import { Genre } from "./../../../interfaces/genres.interface";
 import { Response, Request } from 'express';
 import { GenreSqlModel } from './../../../model/mysql/genres.model';
-import { ValidateInsertGenre } from './../../../validator/genre.validator';
+import { ValidateInsertGenre } from '../validator/genre.validator';
 import { isValidId } from "./../../../util/util";
 class GenreController {
     constructor() {

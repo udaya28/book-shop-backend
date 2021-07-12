@@ -1,6 +1,6 @@
 import { Response, Request } from 'express';
 import { GenreListSqlModel } from './../../../model/mysql/genresList.model';
-import { ValidateInsertGenreList } from './../../../validator/genreList.validator';
+import { ValidateInsertGenreList } from '../validator/genreList.validator';
 import { isValidId } from "./../../../util/util";
 import { GenreSqlModel } from './../../../model/mysql/genres.model';
 import { BookSqlModel } from './../../../model/mysql/books.model';

@@ -1,7 +1,7 @@
 import { Response, Request } from 'express';
 import { isValidId } from './../../../util/util';
 import { AuthorSqlModel } from './../../../model/mysql/authors.model';
-import { ValidateInsertAuthor } from './../../../validator/author.validator';
+import { ValidateInsertAuthor } from '../validator/author.validator';
 class AuthorController {
     constructor() {
 

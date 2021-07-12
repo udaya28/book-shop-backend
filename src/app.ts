@@ -67,7 +67,7 @@ class App {
             res.send('Book Shop');
         });
         this.app.use('/api', this.apiV1Routes);
-        // this.apiV1Routes.use('/mongo', MongoRouter);
+        this.apiV1Routes.use('/mongo', MongoRouter);
         this.apiV1Routes.use('/mysql', MySqlRouter);
     }
 }

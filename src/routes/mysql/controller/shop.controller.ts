@@ -2,7 +2,7 @@ import { BookSqlModel } from './../../../model/mysql/books.model';
 import { Response, Request } from 'express';
 import { StoreMySqlModel } from '../../../model/mysql/shop.model';
 import { isValidId } from "./../../../util/util";
-import { ValidateInsertShopBook } from './../../../validator/shop.validator';
+import { ValidateInsertShopBook } from '../validator/shop.validator';
 class GenreController {
     constructor() {
 

@@ -112,19 +112,22 @@ Books
     "country"   : string
 }
 
-Genres
-{
-    "id"    : ObjectID("Store")
-    
-}
+MONGO API
+
+GET /store
+GET /store/id
+POST /store
+PATCH /store/id
+DELETE /store/id
 
 
-Authors
-{
-    "id"         : ObjectID("Author")
-    "name"       : string
-    "country"    : string
-}
+GET /books
+GET /books/id
+POST /book
+PATCH /book/id
+DELETE /book/id
+
+
 
 
 
