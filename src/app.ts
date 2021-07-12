@@ -6,7 +6,7 @@ import express, { NextFunction, Response, Request } from 'express';
 import MongoRouter from './routes/mongo/mongo.router';
 import MySqlRouter from './routes/mysql/mysql.router';
 import CreateMySqlTable from './model/createMySqlTable';
-
+import mongoose from 'mongoose';
 class App {
     public app: express.Application;
     public apiV1Routes: express.Router;
@@ -36,10 +36,30 @@ class App {
         }
     }
 
-    public listen() {
-        this.app.listen(process.env.SERVER_PORT, () => {
-            console.log(`App listening on the port ${process.env.SERVER_PORT}`);
-        });
+    public createDBConnection() {
+        return mongoose.connect(process.env.MONGODB_URL,
+            {
+                useNewUrlParser: true,
+                useUnifiedTopology: true,
+                useFindAndModify: true,
+                useCreateIndex: true,
+                poolSize: Number(process.env.MONGODB_POOLSIZE),
+                keepAlive: true,
+            })
+    }
+
+    public async listen() {
+        try {
+            await Promise.all([this.createDefaultTables(),this.createDBConnection()])
+            console.log('Connected to MYSQL Database ...')
+            console.log('Connected to MongoDb Database ...')
+            this.app.listen(process.env.SERVER_PORT, () => {
+                console.log(`App listening on the port ${process.env.SERVER_PORT}`);
+            });
+        } catch (error) {
+            console.log(error)
+        }
+        
     }
 
     private routes() {

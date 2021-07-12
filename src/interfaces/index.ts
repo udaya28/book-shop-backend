@@ -1,3 +1,5 @@
 export * from './authors.interface'
 export * from './genres.interface'
 export * from './books.interface'
+export * from './books.interface.mongo'
+export * from './shop.interface.mongo'

@@ -14,7 +14,7 @@ class MySql {
     }
 
     private configRoutes() {
-        console.log("routes")
+        console.log("MySql Routes")
 
         this.router.get('/author', GetAllAuthor)
         this.router.get('/author/:id', GetAuthorById)

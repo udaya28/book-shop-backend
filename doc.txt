@@ -107,14 +107,15 @@ Books
     "id"        : ObjectID("Book")
     "title"     : string
     "price"     : number
-    "genreId"   : [ObjectID("Reference to Genre document")]
-    "authorId"  : ObjectID("Reference to Author document")
+    "genre"     : string
+    "name"      : string
+    "country"   : string
 }
 
 Genres
 {
     "id"    : ObjectID("Store")
-    "genre" : string
+    
 }
 
 
