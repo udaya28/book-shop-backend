@@ -208,10 +208,9 @@ class AuthorUpdatedController implements AuthorController {
             const authorId: string = req.params.authorId
             const title: string = req.params.bookTitle
             isValidMongoIdUpdated(authorId)
-            const propertyName: string = `books.${title}`
-            await AuthorDBNew.findOneAndUpdate({ _id: authorId }, { [propertyName]: null });
+            const result = await AuthorDBNew.updateOne({ _id: authorId }, { $unset: { [`books.${title}`]: 1 } });
             response = {
-                ResponseData: null,
+                ResponseData: result,
                 ResponseMessage: 'deleted a Book in Author',
             }
         } catch (error) {

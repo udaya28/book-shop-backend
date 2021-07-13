@@ -24,33 +24,7 @@ class MongoUpdated {
         this.router.delete('/author/:authorId',DeleteAuthorById )
 
     }
-
-
 }
 
 const MongoUpdatedRouter = new MongoUpdated().router;
 export default MongoUpdatedRouter;
-
-// (async () => {
-//     let test: AuthorNew;
-//     test = {
-//         authorCountry: "IND",
-//         authorName: "udaya",
-//         books: {
-//             "Java": {
-//                 title: "Java",
-//                 publishedOn: "2020",
-//                 genres: ["Java", "GUI"]
-//             },
-//             "HTML and CSS": {
-//                 title: "HTML and CSS",
-//                 publishedOn: "2021",
-//                 genres: ["HTML", "CSS"]
-//             }
-//         }
-//     }
-
-//     const result = await AuthorDBNew.create(test);
-//     console.log(result)
-
-// })()

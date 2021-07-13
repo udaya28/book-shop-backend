@@ -17,7 +17,7 @@ API'S
 
 GET /author/                                            - get all author with all books
     - returns all the documents
-    - RESPONSE =>[{
+    - RESPONSE => [{
         "id"               : string
         "authorName"       : string,
         "authorCountry"    : string,
@@ -36,7 +36,7 @@ GET /author/                                            - get all author with al
 
 GET /author/:authorId                                   - get a author with all books by author id
     - returns single document with authorId
-    - RESPONSE =>{
+    - RESPONSE => {
         "id"               : string
         "authorName"       : string,
         "authorCountry"    : string,
@@ -61,6 +61,15 @@ POST /author                                            - create a author
             authorCountry:"",
         }
     }
+    - RESPONSE {
+    "ResponseData": {
+        "_id": "",
+        "authorName": "",
+        "authorCountry": "",
+        "__v": 0
+    },
+    "ResponseMessage": "Author Created"
+    }
 
 
 PATCH /author/:authorId                                 - update a author by author id
@@ -71,10 +80,26 @@ PATCH /author/:authorId                                 - update a author by aut
             authorCountry:"",
         }
     }
+    - RESPONSE {
+    "ResponseData": {
+        "n": 1,
+        "nModified": 1,
+        "ok": 1
+    },
+    "ResponseMessage": "Author Updated"
+    }
 
 
 DELETE /author/:authorId                                - delete a author by author id
     - delete a author with author id
+    - RESPONSE {
+    "ResponseData": {
+        "n": 1,
+        "ok": 1,
+        "deletedCount": 1
+    },
+    "ResponseMessage": "Author Deleted"
+    }
     
 
 GET /author/:authorId/book/                             - get all book by author id
@@ -123,18 +148,13 @@ POST /author/:authorId/book/                            - create a book by autho
 }
 
 
-
-
-PATCH /author/:authorId/book/:bookTitle                 - update a book by author id and bookTitle
-    - update a book in author book list by author id and book title
-    - PATCH {
-        data:{
-            title:"",
-            publishedOn:"",
-            genres:[]
-        }
-    }
-
-
 DELETE /author/:authorId/book/:bookTitle                - delete a book by author id and bookTitle
     - delete a book in author book list by author id and book title
+    - RESPONSE {
+    "ResponseData": {
+        "n": 1,
+        "nModified": 1,
+        "ok": 1
+    },
+    "ResponseMessage": "deleted a Book in Author"
+}
