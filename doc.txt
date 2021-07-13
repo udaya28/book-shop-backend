@@ -1,5 +1,4 @@
 DataBase Design
-$ - Tables
 
 Store
 - id        - number    -> Primary key
@@ -102,15 +101,33 @@ Store
     "count"  : number
 }
 
+
+
+
+
 Books
 {
     "id"        : ObjectID("Book")
     "title"     : string
     "price"     : number
     "genre"     : string
+    
+}
+
+Author
+{
     "name"      : string
     "country"   : string
+    "book"      : []
 }
+
+
+genre{
+
+}
+
+
+
 
 MONGO API
 
@@ -163,3 +180,7 @@ GROUP BY  books.id;
 
 
 
+
+// 1 mongo schema 
+// 2 create a single file 
+//

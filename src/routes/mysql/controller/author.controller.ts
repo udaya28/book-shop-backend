@@ -42,13 +42,13 @@ class AuthorController {
     }
 
 
-    public static insertAuthor = async (req: Request, res: Response) => {
+    public static insertAuthor = async (req: Request, res: Response)=> {
         let response;
         try {
-            const { error } = ValidateInsertAuthor(req.body)
-            if (error) {
-                return res.send(error.message).status(500).end();
-            }
+            //  ValidateInsertAuthor(req.body)
+            // if (error) {
+            //     return res.send(error.message).status(400).end();
+            // }
             const name = req.body.data.name
             const country = req.body.data.country
             const insertedID = await AuthorSqlModel.insertAuthor(name, country)
@@ -132,3 +132,4 @@ export {
     DeleteAuthorById,
     UpdateAuthorById
 }
+

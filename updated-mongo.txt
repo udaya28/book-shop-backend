@@ -1,0 +1,140 @@
+Authors
+{
+ "id"               : string
+ "authorName"       : string,
+ "authorCountry"    : string,
+ "books": {
+   "bookTitle1" : {
+     "title"        : string,
+     "publishedOn"  : string,
+     "genres"       : ["g1", "g2"]
+    }
+ }
+}
+
+
+API'S
+
+GET /author/                                            - get all author with all books
+    - returns all the documents
+    - RESPONSE =>[{
+        "id"               : string
+        "authorName"       : string,
+        "authorCountry"    : string,
+        "books": {
+          "bookTitle1" : {
+            "title"        : string,
+            "publishedOn"  : string,
+            "genres"       : ["g1", "g2"]
+           },
+           "bookTitle2" : { ... },
+           "bookTitle3" : { ... },
+           "bookTitleN" : { ... },
+        }
+    },{...},{...},{...},{...}]
+
+
+GET /author/:authorId                                   - get a author with all books by author id
+    - returns single document with authorId
+    - RESPONSE =>{
+        "id"               : string
+        "authorName"       : string,
+        "authorCountry"    : string,
+        "books": {
+          "bookTitle1" : {
+            "title"        : string,
+            "publishedOn"  : string,
+            "genres"       : ["g1", "g2"]
+           },
+           "bookTitle2" : { ... },
+           "bookTitle3" : { ... },
+           "bookTitleN" : { ... },
+        }
+    }
+
+
+POST /author                                            - create a author
+    - create a author
+    - POST {
+        data:{
+            authorName:"",
+            authorCountry:"",
+        }
+    }
+
+
+PATCH /author/:authorId                                 - update a author by author id
+    - update a author
+    - PATCH {
+        data:{
+            authorName:"",
+            authorCountry:"",
+        }
+    }
+
+
+DELETE /author/:authorId                                - delete a author by author id
+    - delete a author with author id
+    
+
+GET /author/:authorId/book/                             - get all book by author id
+    - returns all the book by a author 
+    - RESPONSE => {
+        "books": {
+          "bookTitle1" : {
+            "title"        : string,
+            "publishedOn"  : string,
+            "genres"       : ["g1", "g2"]
+           },
+           "bookTitle2" : { ... },
+           "bookTitle3" : { ... },
+           "bookTitleN" : { ... },
+        }
+    }
+
+
+GET /author/:authorId/book/:bookTitle                   - get a book by author id and bookTitle
+    - returns a book by a author and title of book
+    - RESPONSE => {
+        "bookTitle" : {
+            "title"        : string,
+            "publishedOn"  : string,
+            "genres"       : ["g1", "g2"]
+           }
+    }
+
+
+POST /author/:authorId/book/                            - create a book by author id
+    - add a book to author book list by author id
+    - POST {
+        data:{
+            title:"",
+            publishedOn:"",
+            genres:[]
+        }
+    }
+    - RESPONSE {
+    "ResponseData": {
+        "_id": "",
+        "authorName": "",
+        "authorCountry": "",
+    },
+    "ResponseMessage": "Author Created"
+}
+
+
+
+
+PATCH /author/:authorId/book/:bookTitle                 - update a book by author id and bookTitle
+    - update a book in author book list by author id and book title
+    - PATCH {
+        data:{
+            title:"",
+            publishedOn:"",
+            genres:[]
+        }
+    }
+
+
+DELETE /author/:authorId/book/:bookTitle                - delete a book by author id and bookTitle
+    - delete a book in author book list by author id and book title

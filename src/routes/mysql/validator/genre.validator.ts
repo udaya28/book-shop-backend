@@ -9,7 +9,9 @@ class GenreValidation {
         genre: Joi.string().required(),
       },
     });
-    return schema.validate(data);
+     schema.validate(data);
+
+    //  if(! schema.validate(data)) throw {customErr()}
   }
 }
 

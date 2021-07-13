@@ -1,0 +1,146 @@
+Books
+{
+
+    "title"          : string
+    "price"          : number
+    "authorName"     : string
+    "authorCountry"  : string
+    "genres"         : [string,string]
+}
+
+Authors
+{
+    "authorName"      : string
+    "authorCountry"   : string
+    "books"           : [{
+        "title"       : string
+        "price"       : number
+        "genre"       : [string]
+    },{ }]
+}
+
+
+Genres
+{
+    genre                :string
+    books                :[{
+        "title"          : string
+        "price"          : number
+        "authorName"     : string
+        "authorCountry"  : string
+    },{}]
+}
+
+-   In this above schema there is no relation between any two document
+-   But In this above schema if I need to change any details, I need to change in all three document,
+    I think it is better to use a single document as shown below as everything can be maintained in single document
+
+ Books
+{
+    "title"          : string
+    "price"          : number
+    "authorName"     : string
+    "authorCountry"  : string
+    "genres"         : [string,string]
+}
+
+-   By this above schema, everything can be in single document and no relations made
+-   can make query in different ways
+
+
+API OF ABOVE SCHEMA :
+
+GET /books                           - get all books
+GET /books/:id                       - get books by id
+POST /book                           - insert book
+PATCH /book/:id                      - update book by id
+DELETE /book/:id                     - delete book by id
+
+GET /author/:authorName              - get all books by authorName
+PATCH /author/:authorName            - update all author details with authorName
+
+GET /genre/:genreName                - get all books by genreName
+PATCH /genre/:genreName              - update all genre details with genreName
+
+GET /country/:countryName            - get all books by countryName
+PATCH /country/:countryName          - update all country details with countryName
+
+
+
+Books
+{
+ "id"               : string
+ "authorName"       : string,
+ "authorCountry"    : string,
+ "books": {
+   "bookTitle1" : {
+     "title"        : string,
+     "publishedOn"  : string,
+     "genres"       : ["g1", "g2"]
+    }
+ }
+}
+
+
+GET /author/                                            - get all author with all books
+    - returns all the documents
+
+GET /author/:authorId                                   - get a author with all books by author id
+    - returns single document with authorId
+
+POST /author                                            - create a author
+    - create a author
+    - POST {
+        data:{
+            authorName:"",
+            authorCountry:"",
+        }
+    }
+
+PATCH /author/:authorId                                 - update a author by author id
+    - update a author
+    - PATCH {
+        data:{
+            authorName:"",
+            authorCountry:"",
+        }
+    }
+
+DELETE /author/:authorId                                - delete a author by author id
+    - delete a author with author id
+
+
+
+
+
+GET /author/:authorId/book/                             - get all book by author id
+    - returns all the book by a author 
+
+GET /author/:authorId/book/:bookTitle                   - get a book by author id and bookTitle
+    - returns a book by a author and title of book
+
+POST /author/:authorId/book/                            - create a book by author id
+    - add a book to author book list by author id
+    - POST {
+        data:{
+            title:"",
+            publishedOn:"",
+            genres:[]
+        }
+    }
+
+PATCH /author/:authorId/book/:bookTitle                 - update a book by author id and bookTitle
+    - update a book in author book list by author id and book title
+    - PATCH {
+        data:{
+            title:"",
+            publishedOn:"",
+            genres:[]
+        }
+    }
+
+DELETE /author/:authorId/book/:bookTitle                - delete a book by author id and bookTitle
+    - delete a book in author book list by author id and book title
+
+
+

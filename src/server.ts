@@ -4,6 +4,3 @@ dotenv.config();
 
 const app = new App();
 app.listen();
-
-
-

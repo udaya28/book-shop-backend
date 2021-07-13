@@ -7,6 +7,7 @@ import MongoRouter from './routes/mongo/mongo.router';
 import MySqlRouter from './routes/mysql/mysql.router';
 import CreateMySqlTable from './model/createMySqlTable';
 import mongoose from 'mongoose';
+import MongoUpdatedRouter from './routes/mongo-updated/mongo-updated-router';
 class App {
     public app: express.Application;
     public apiV1Routes: express.Router;
@@ -67,6 +68,7 @@ class App {
             res.send('Book Shop');
         });
         this.app.use('/api', this.apiV1Routes);
+        this.apiV1Routes.use('/mongo-updated', MongoUpdatedRouter);
         this.apiV1Routes.use('/mongo', MongoRouter);
         this.apiV1Routes.use('/mysql', MySqlRouter);
     }
