@@ -1,5 +1,5 @@
 import mongoose, { Model } from 'mongoose';
-import { AuthorNew } from '../../interfaces/index';
+import { AuthorNew } from '../../routes/mongo-updated/interface';
 const { Schema } = mongoose;
 
 const BookMongoNew = new Schema({

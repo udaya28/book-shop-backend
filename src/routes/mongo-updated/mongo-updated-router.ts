@@ -1,5 +1,7 @@
 import * as express from "express";
 import { AddBookByAuthorId, DeleteAuthorById, DeleteBookByBookIdAndAuthorId, GetAllAuthor, GetAllBookByAuthorId, GetAuthorById, GetBookByAuthorId, InsertAuthor, UpdatedAuthorById } from "./controllers/author.controller";
+import { validateMiddleware } from "./validator/middleware.validator";
+import { authorSchema, bookSchema } from "./validator/schema.validator";
 
 
 class MongoUpdated {
@@ -14,13 +16,13 @@ class MongoUpdated {
 
         this.router.get('/author/:authorId/book', GetAllBookByAuthorId)
         this.router.get('/author/:authorId/book/:bookTitle',GetBookByAuthorId )
-        this.router.post('/author/:authorId/book', AddBookByAuthorId)
+        this.router.post('/author/:authorId/book',validateMiddleware(bookSchema), AddBookByAuthorId)
         this.router.delete('/author/:authorId/book/:bookTitle',DeleteBookByBookIdAndAuthorId )
 
         this.router.get('/author', GetAllAuthor)
         this.router.get('/author/:authorId', GetAuthorById)
-        this.router.post('/author', InsertAuthor)
-        this.router.patch('/author/:authorId', UpdatedAuthorById)
+        this.router.post('/author',validateMiddleware(authorSchema), InsertAuthor)
+        this.router.patch('/author/:authorId',validateMiddleware(authorSchema), UpdatedAuthorById)
         this.router.delete('/author/:authorId',DeleteAuthorById )
 
     }
