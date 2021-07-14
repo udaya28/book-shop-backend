@@ -2,7 +2,7 @@ import { Response, Request } from 'express';
 import mongoose from 'mongoose';
 import { AuthorDBNew } from './../../../model/mongo-updated/authors.model.mongo';
 import { AuthorNew, BookResult } from './../interface'
-import { isValidMongoIdUpdated } from '../util';
+import { isValidAuthorId, isValidMongoIdUpdated } from '../util';
 import { ApiResponse, AuthorController, DeleteResult } from '../interface';
 
 
@@ -29,6 +29,7 @@ class AuthorUpdatedController implements AuthorController {
         try {
             const authorId: string = req.params.authorId
             isValidMongoIdUpdated(authorId)
+            await isValidAuthorId(authorId)
             const author: Array<AuthorNew> = await AuthorDBNew.find({ _id: authorId });
             response = {
                 ResponseData: author,
@@ -36,7 +37,7 @@ class AuthorUpdatedController implements AuthorController {
             }
         } catch (error) {
             console.log(error.message);
-            if (error.message === "Invalid Mongo Id") {
+            if (error.message === "Invalid Mongo Id" || error.message === "Invalid Author Id") {
                 response = {
                     ResponseData: null,
                     ResponseMessage: error.message,
@@ -74,6 +75,7 @@ class AuthorUpdatedController implements AuthorController {
         try {
             const authorId: string = req.params.authorId
             isValidMongoIdUpdated(authorId)
+            await isValidAuthorId(authorId)
             const authorName: string = req.body.data.authorName
             const authorCountry: string = req.body.data.authorCountry
             const author: mongoose.UpdateWriteOpResult = await AuthorDBNew.updateOne({ _id: authorId }, {
@@ -86,7 +88,7 @@ class AuthorUpdatedController implements AuthorController {
             }
         } catch (error) {
             console.log(error.message);
-            if (error.message === "Invalid Mongo Id") {
+            if (error.message === "Invalid Mongo Id" || error.message === "Invalid Author Id") {
                 response = {
                     ResponseData: null,
                     ResponseMessage: error.message,
@@ -103,6 +105,7 @@ class AuthorUpdatedController implements AuthorController {
         try {
             const authorId: string = req.params.authorId
             isValidMongoIdUpdated(authorId)
+            await isValidAuthorId(authorId)
             const result: DeleteResult = await AuthorDBNew.deleteOne({ _id: authorId });
             response = {
                 ResponseData: result,
@@ -110,7 +113,7 @@ class AuthorUpdatedController implements AuthorController {
             }
         } catch (error) {
             console.log(error.message);
-            if (error.message === "Invalid Mongo Id") {
+            if (error.message === "Invalid Mongo Id" || error.message === "Invalid Author Id") {
                 response = {
                     ResponseData: null,
                     ResponseMessage: error.message,
@@ -123,13 +126,14 @@ class AuthorUpdatedController implements AuthorController {
 
     }
 
-    // -----------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------------------
 
     getAllBookByAuthorId = async (req: Request, res: Response): Promise<any> => {
         let response: ApiResponse<Array<BookResult>>;
         try {
             const authorId: string = req.params.authorId
             isValidMongoIdUpdated(authorId)
+            await isValidAuthorId(authorId)
             const authors: Array<BookResult> = await AuthorDBNew.find({ _id: authorId }, '-_id books');
             response = {
                 ResponseData: authors,
@@ -137,7 +141,7 @@ class AuthorUpdatedController implements AuthorController {
             }
         } catch (error) {
             console.log(error.message);
-            if (error.message === "Invalid Mongo Id") {
+            if (error.message === "Invalid Mongo Id" || error.message === "Invalid Author Id") {
                 response = {
                     ResponseData: null,
                     ResponseMessage: error.message,
@@ -155,6 +159,7 @@ class AuthorUpdatedController implements AuthorController {
             const authorId: string = req.params.authorId
             const bookTitle: string = req.params.bookTitle || ""
             isValidMongoIdUpdated(authorId)
+            await isValidAuthorId(authorId)
             const authors: Array<BookResult> = await AuthorDBNew.find({ _id: authorId }, `-_id books.${bookTitle}`);
             response = {
                 ResponseData: authors,
@@ -162,7 +167,7 @@ class AuthorUpdatedController implements AuthorController {
             }
         } catch (error) {
             console.log(error.message);
-            if (error.message === "Invalid Mongo Id") {
+            if (error.message === "Invalid Mongo Id" || error.message === "Invalid Author Id") {
                 response = {
                     ResponseData: null,
                     ResponseMessage: error.message,
@@ -182,6 +187,7 @@ class AuthorUpdatedController implements AuthorController {
             const publishedOn: string = req.body.data.publishedOn
             const genres: Array<string> = req.body.data.genres
             isValidMongoIdUpdated(authorId)
+            await isValidAuthorId(authorId)
             const propertyName: string = `books.${title}`
             await AuthorDBNew.findOneAndUpdate({ _id: authorId }, { [propertyName]: { title, publishedOn, genres } });
             response = {
@@ -190,7 +196,7 @@ class AuthorUpdatedController implements AuthorController {
             }
         } catch (error) {
             console.log(error.message);
-            if (error.message === "Invalid Mongo Id") {
+            if (error.message === "Invalid Mongo Id" || error.message === "Invalid Author Id") {
                 response = {
                     ResponseData: null,
                     ResponseMessage: error.message,
@@ -208,6 +214,7 @@ class AuthorUpdatedController implements AuthorController {
             const authorId: string = req.params.authorId
             const title: string = req.params.bookTitle
             isValidMongoIdUpdated(authorId)
+            await isValidAuthorId(authorId)
             const result = await AuthorDBNew.updateOne({ _id: authorId }, { $unset: { [`books.${title}`]: 1 } });
             response = {
                 ResponseData: result,
@@ -215,7 +222,7 @@ class AuthorUpdatedController implements AuthorController {
             }
         } catch (error) {
             console.log(error.message);
-            if (error.message === "Invalid Mongo Id") {
+            if (error.message === "Invalid Mongo Id" || error.message === "Invalid Author Id") {
                 response = {
                     ResponseData: null,
                     ResponseMessage: error.message,
