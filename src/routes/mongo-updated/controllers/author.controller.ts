@@ -1,57 +1,51 @@
 import { Response, Request } from 'express';
 import mongoose from 'mongoose';
 import { AuthorDBNew } from './../../../model/mongo-updated/authors.model.mongo';
-import { AuthorNew, BookResult } from './../interface'
-import { isValidAuthorId, isValidMongoIdUpdated } from '../util';
-import { ApiResponse, AuthorController, DeleteResult } from '../interface';
+import { AuthorController, AuthorNew, BookResult } from './../interface'
+import { createResponse, isValidAuthorId, isValidMongoIdUpdated } from '../util';
+import { ApiResponse, DeleteResult } from '../interface';
+import { handelError } from '../handel-error';
 
-
+const validateAuthorId = async (authorId: string) => {
+    isValidMongoIdUpdated(authorId)
+    await isValidAuthorId(authorId)
+}
 class AuthorUpdatedController implements AuthorController {
     constructor() { }
 
-    getAllAuthor = async (req: Request, res: Response): Promise<any> => {
-        let response: ApiResponse<Array<AuthorNew>>;
+    getAllAuthor = async (req: Request, res: Response): Promise<Response> => {
+        let status;
+        let response: ApiResponse<any>
         try {
             const authors: Array<AuthorNew> = await AuthorDBNew.find({});
-            response = {
-                ResponseData: authors,
-                ResponseMessage: 'All Authors Fetched',
-            }
+            status = 200
+            response = createResponse(authors, 'All Authors Fetched')
         } catch (error) {
-            console.log(error);
-            return res.status(500).end();
+            status = 500
+            response = handelError(error)
         }
-        return res.send(response).status(200);
+        return res.send(response).status(status);
     }
 
-    getAuthorById = async (req: Request, res: Response): Promise<any> => {
-        let response: ApiResponse<Array<AuthorNew>>;
+    getAuthorById = async (req: Request, res: Response): Promise<Response> => {
+        let status;
+        let response: ApiResponse<any>
         try {
             const authorId: string = req.params.authorId
-            isValidMongoIdUpdated(authorId)
-            await isValidAuthorId(authorId)
+            await validateAuthorId(authorId)
             const author: Array<AuthorNew> = await AuthorDBNew.find({ _id: authorId });
-            response = {
-                ResponseData: author,
-                ResponseMessage: 'Author Fetched',
-            }
+            status = 200
+            response = createResponse(author, 'Author Fetched')
         } catch (error) {
-            console.log(error.message);
-            if (error.message === "Invalid Mongo Id" || error.message === "Invalid Author Id") {
-                response = {
-                    ResponseData: null,
-                    ResponseMessage: error.message,
-                }
-                return res.send(response).status(400);
-            }
-            return res.status(500).end();
+            status = 500
+            response = handelError(error)
         }
-        return res.send(response).status(200);
-
+        return res.send(response).status(status);
     }
 
-    insertAuthor = async (req: Request, res: Response): Promise<any> => {
-        let response: ApiResponse<any>;
+    insertAuthor = async (req: Request, res: Response): Promise<Response> => {
+        let status;
+        let response: ApiResponse<any>
         try {
             const authorName: string = req.body.data.authorName
             const authorCountry: string = req.body.data.authorCountry
@@ -59,203 +53,125 @@ class AuthorUpdatedController implements AuthorController {
                 authorName,
                 authorCountry,
             });
-            response = {
-                ResponseData: author,
-                ResponseMessage: 'Author Created',
-            }
+            status = 200
+            response = createResponse(author, 'Author Created')
         } catch (error) {
-            console.log(error);
-            return res.status(500).end();
+            status = 500
+            response = handelError(error)
         }
-        return res.send(response).status(200);
+        return res.send(response).status(status);
     }
 
-    updatedAuthorById = async (req: Request, res: Response): Promise<any> => {
+    updatedAuthorById = async (req: Request, res: Response): Promise<Response> => {
+
         let response: ApiResponse<any>;
+        let status: number;
         try {
             const authorId: string = req.params.authorId
-            isValidMongoIdUpdated(authorId)
-            await isValidAuthorId(authorId)
+            await validateAuthorId(authorId)
             const authorName: string = req.body.data.authorName
             const authorCountry: string = req.body.data.authorCountry
             const author: mongoose.UpdateWriteOpResult = await AuthorDBNew.updateOne({ _id: authorId }, {
                 authorName,
                 authorCountry,
             });
-            response = {
-                ResponseData: author,
-                ResponseMessage: 'Author Updated',
-            }
+            status = 200
+            response = createResponse(author, 'Author Updated')
         } catch (error) {
-            console.log(error.message);
-            if (error.message === "Invalid Mongo Id" || error.message === "Invalid Author Id") {
-                response = {
-                    ResponseData: null,
-                    ResponseMessage: error.message,
-                }
-                return res.send(response).status(400);
-            }
-            return res.status(500).end();
+            status = 500
+            response = handelError(error)
         }
-        return res.send(response).status(200);
+        return res.send(response).status(status);
     }
 
-    deleteAuthorById = async (req: Request, res: Response): Promise<any> => {
+    deleteAuthorById = async (req: Request, res: Response): Promise<Response> => {
         let response: ApiResponse<any>;
+        let status: number;
         try {
             const authorId: string = req.params.authorId
-            isValidMongoIdUpdated(authorId)
-            await isValidAuthorId(authorId)
+            await validateAuthorId(authorId)
             const result: DeleteResult = await AuthorDBNew.deleteOne({ _id: authorId });
-            response = {
-                ResponseData: result,
-                ResponseMessage: 'Author Deleted',
-            }
+            status = 200
+            response = createResponse(result, 'Author Deleted')
         } catch (error) {
-            console.log(error.message);
-            if (error.message === "Invalid Mongo Id" || error.message === "Invalid Author Id") {
-                response = {
-                    ResponseData: null,
-                    ResponseMessage: error.message,
-                }
-                return res.send(response).status(400);
-            }
-            return res.status(500).end();
+            status = 500
+            response = handelError(error)
         }
-        return res.send(response).status(200);
-
+        return res.send(response).status(status);
     }
 
-    // --------------------------------------------------------------------------------------------------------
 
-    getAllBookByAuthorId = async (req: Request, res: Response): Promise<any> => {
-        let response: ApiResponse<Array<BookResult>>;
-        try {
-            const authorId: string = req.params.authorId
-            isValidMongoIdUpdated(authorId)
-            await isValidAuthorId(authorId)
-            const authors: Array<BookResult> = await AuthorDBNew.find({ _id: authorId }, '-_id books');
-            response = {
-                ResponseData: authors,
-                ResponseMessage: 'All books By author Fetched',
-            }
-        } catch (error) {
-            console.log(error.message);
-            if (error.message === "Invalid Mongo Id" || error.message === "Invalid Author Id") {
-                response = {
-                    ResponseData: null,
-                    ResponseMessage: error.message,
-                }
-                return res.send(response).status(400);
-            }
-            return res.status(500).end();
-        }
-        return res.send(response).status(200);
-    }
-
-    getBookByAuthorId = async (req: Request, res: Response): Promise<any> => {
-        let response: ApiResponse<Array<BookResult>>;
-        try {
-            const authorId: string = req.params.authorId
-            const bookTitle: string = req.params.bookTitle || ""
-            isValidMongoIdUpdated(authorId)
-            await isValidAuthorId(authorId)
-            const authors: Array<BookResult> = await AuthorDBNew.find({ _id: authorId }, `-_id books.${bookTitle}`);
-            response = {
-                ResponseData: authors,
-                ResponseMessage: 'All books By author Fetched',
-            }
-        } catch (error) {
-            console.log(error.message);
-            if (error.message === "Invalid Mongo Id" || error.message === "Invalid Author Id") {
-                response = {
-                    ResponseData: null,
-                    ResponseMessage: error.message,
-                }
-                return res.send(response).status(400);
-            }
-            return res.status(500).end();
-        }
-        return res.send(response).status(200);
-    }
-
-    addBookByAuthorId = async (req: Request, res: Response): Promise<any> => {
+    getAllBookByAuthorId = async (req: Request, res: Response): Promise<Response> => {
         let response: ApiResponse<any>;
+        let status: number;
         try {
             const authorId: string = req.params.authorId
+            await validateAuthorId(authorId)
+            const books: Array<BookResult> = await AuthorDBNew.find({ _id: authorId }, '-_id books');
+            status = 200
+            response = createResponse(books, 'All books By author Fetched')
+        } catch (error) {
+            status = 500
+            response = handelError(error)
+        }
+        return res.send(response).status(status);
+    }
+
+    getBookByAuthorId = async (req: Request, res: Response): Promise<Response> => {
+        let response: ApiResponse<any>;
+        let status: number;
+        try {
+            const authorId: string = req.params.authorId
+            await validateAuthorId(authorId)
+            const bookTitle: string = req.params.bookTitle || ""
+            const book: Array<BookResult> = await AuthorDBNew.find({ _id: authorId }, `-_id books.${bookTitle}`);
+            status = 200
+            response = createResponse(book, 'Book Fetched')
+        } catch (error) {
+            status = 500
+            response = handelError(error)
+        }
+        return res.send(response).status(status);
+    }
+
+    addBookByAuthorId = async (req: Request, res: Response): Promise<Response> => {
+        let response: ApiResponse<any>;
+        let status: number;
+        try {
+            const authorId: string = req.params.authorId
+            await validateAuthorId(authorId)
             const title: string = req.body.data.title
             const publishedOn: string = req.body.data.publishedOn
             const genres: Array<string> = req.body.data.genres
-            isValidMongoIdUpdated(authorId)
-            await isValidAuthorId(authorId)
-            const propertyName: string = `books.${title}`
-            await AuthorDBNew.findOneAndUpdate({ _id: authorId }, { [propertyName]: { title, publishedOn, genres } });
-            response = {
-                ResponseData: null,
-                ResponseMessage: 'Added Book to Author',
-            }
+            await AuthorDBNew.findOneAndUpdate({ _id: authorId }, { [`books.${title}`]: { title, publishedOn, genres } });
+            status = 200
+            response = createResponse(null, 'Added Book to Author')
         } catch (error) {
-            console.log(error.message);
-            if (error.message === "Invalid Mongo Id" || error.message === "Invalid Author Id") {
-                response = {
-                    ResponseData: null,
-                    ResponseMessage: error.message,
-                }
-                return res.send(response).status(400);
-            }
-            return res.status(500).end();
+            status = 500
+            response = handelError(error)
         }
-        return res.send(response).status(200);
+        return res.send(response).status(status);
     }
 
-    deleteBookByBookIdAndAuthorId = async (req: Request, res: Response): Promise<any> => {
+    deleteBookByBookIdAndAuthorId = async (req: Request, res: Response): Promise<Response> => {
         let response: ApiResponse<any>;
+        let status: number;
         try {
+            ``
             const authorId: string = req.params.authorId
+            await validateAuthorId(authorId)
             const title: string = req.params.bookTitle
-            isValidMongoIdUpdated(authorId)
-            await isValidAuthorId(authorId)
-            const result = await AuthorDBNew.updateOne({ _id: authorId }, { $unset: { [`books.${title}`]: 1 } });
-            response = {
-                ResponseData: result,
-                ResponseMessage: 'deleted a Book in Author',
-            }
+            const result: DeleteResult = await AuthorDBNew.updateOne({ _id: authorId }, { $unset: { [`books.${title}`]: 1 } });
+            status = 200
+            response = createResponse(result, 'Deleted a Book in Author')
         } catch (error) {
-            console.log(error.message);
-            if (error.message === "Invalid Mongo Id" || error.message === "Invalid Author Id") {
-                response = {
-                    ResponseData: null,
-                    ResponseMessage: error.message,
-                }
-                return res.send(response).status(400);
-            }
-            return res.status(500).end();
+            status = 500
+            response = handelError(error)
         }
-        return res.send(response).status(200);
+        return res.send(response).status(status);
     }
-
 }
 
-const AuthorController = new AuthorUpdatedController()
-const GetAllAuthor = AuthorController.getAllAuthor;
-const GetAuthorById = AuthorController.getAuthorById;
-const InsertAuthor = AuthorController.insertAuthor;
-const UpdatedAuthorById = AuthorController.updatedAuthorById;
-const DeleteAuthorById = AuthorController.deleteAuthorById;
+const authorController = new AuthorUpdatedController()
+export default authorController
 
-const GetAllBookByAuthorId = AuthorController.getAllBookByAuthorId;
-const GetBookByAuthorId = AuthorController.getBookByAuthorId;
-const AddBookByAuthorId = AuthorController.addBookByAuthorId;
-const DeleteBookByBookIdAndAuthorId = AuthorController.deleteBookByBookIdAndAuthorId;
-
-export {
-    GetAllAuthor,
-    GetAuthorById,
-    InsertAuthor,
-    DeleteAuthorById,
-    UpdatedAuthorById,
-    GetAllBookByAuthorId,
-    GetBookByAuthorId,
-    AddBookByAuthorId,
-    DeleteBookByBookIdAndAuthorId
-}

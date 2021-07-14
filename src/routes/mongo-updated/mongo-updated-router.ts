@@ -1,5 +1,6 @@
 import * as express from "express";
-import { AddBookByAuthorId, DeleteAuthorById, DeleteBookByBookIdAndAuthorId, GetAllAuthor, GetAllBookByAuthorId, GetAuthorById, GetBookByAuthorId, InsertAuthor, UpdatedAuthorById } from "./controllers/author.controller";
+import authorController from "./controllers/author.controller";
+const { addBookByAuthorId, deleteAuthorById, deleteBookByBookIdAndAuthorId, getAllAuthor, getAllBookByAuthorId, getAuthorById, getBookByAuthorId, insertAuthor, updatedAuthorById } = authorController
 import { validateMiddleware } from "./validator/middleware.validator";
 import { authorSchema, bookSchema } from "./validator/schema.validator";
 
@@ -17,16 +18,16 @@ class MongoUpdated implements MongoUpdatedInterface {
     configRoutes() {
         console.log("MongoDb Updated routes")
 
-        this.router.get('/author/:authorId/book', GetAllBookByAuthorId)
-        this.router.get('/author/:authorId/book/:bookTitle', GetBookByAuthorId)
-        this.router.post('/author/:authorId/book', validateMiddleware(bookSchema), AddBookByAuthorId)
-        this.router.delete('/author/:authorId/book/:bookTitle', DeleteBookByBookIdAndAuthorId)
+        this.router.get('/author/:authorId/book', getAllBookByAuthorId)
+        this.router.get('/author/:authorId/book/:bookTitle', getBookByAuthorId)
+        this.router.post('/author/:authorId/book', validateMiddleware(bookSchema), addBookByAuthorId)
+        this.router.delete('/author/:authorId/book/:bookTitle', deleteBookByBookIdAndAuthorId)
 
-        this.router.get('/author', GetAllAuthor)
-        this.router.get('/author/:authorId', GetAuthorById)
-        this.router.post('/author', validateMiddleware(authorSchema), InsertAuthor)
-        this.router.patch('/author/:authorId', validateMiddleware(authorSchema), UpdatedAuthorById)
-        this.router.delete('/author/:authorId', DeleteAuthorById)
+        this.router.get('/author', getAllAuthor)
+        this.router.get('/author/:authorId', getAuthorById)
+        this.router.post('/author', validateMiddleware(authorSchema), insertAuthor)
+        this.router.patch('/author/:authorId', validateMiddleware(authorSchema), updatedAuthorById)
+        this.router.delete('/author/:authorId', deleteAuthorById)
 
     }
 }
