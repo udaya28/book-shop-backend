@@ -4,7 +4,8 @@ import { createResponse } from "./util";
 const handelError = (error: any): ApiResponse<any> => {
     console.log(error);
     let response: ApiResponse<any>;
-    if ((error && error.message) && (error.message === "Invalid Mongo Id" || error.message === "Invalid Author Id")) {
+    const errorsArray: Array<string> = ['Invalid Mongo Id', 'Invalid Author Id', 'Author Name Already Exist']
+    if ((error && error.message) && (errorsArray.some(err => err === error.message))) {
         response = createResponse(null, error.message)
     } else {
         response = createResponse(null, 'Some Thing Went Wrong')
@@ -12,6 +13,6 @@ const handelError = (error: any): ApiResponse<any> => {
     return response
 }
 
-export{
+export {
     handelError
 }

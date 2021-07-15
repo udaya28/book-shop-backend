@@ -9,7 +9,7 @@ class ShopControllerMongo {
     constructor() { }
 
 
-    public static getAllShopBook = async (req: Request, res: Response) => {
+    getAllShopBook = async (req: Request, res: Response) => {
         let response: any;
         try {
             const shops: Array<shopMongo> = await ShopDB.find({}).populate('book');
@@ -24,7 +24,7 @@ class ShopControllerMongo {
         return res.send(response).status(200);
     }
 
-    public static getShopBookById = async (req: Request, res: Response) => {
+    getShopBookById = async (req: Request, res: Response) => {
         let response: any;
 
         try {
@@ -44,7 +44,7 @@ class ShopControllerMongo {
         return res.send(response).status(200);
     }
 
-    public static insertShopBook = async (req: Request, res: Response) => {
+    insertShopBook = async (req: Request, res: Response) => {
         try {
             let response: any;
             const { error } = ValidateInsertShopMongo(req.body)
@@ -77,7 +77,7 @@ class ShopControllerMongo {
         }
     }
 
-    public static updateShopBookById = async (req: Request, res: Response) => {
+    updateShopBookById = async (req: Request, res: Response) => {
         let response: any;
         try {
             const { error } = ValidateInsertShopMongo(req.body)
@@ -117,7 +117,7 @@ class ShopControllerMongo {
         return res.send(response).status(200);
     }
 
-    public static deleteShopBookById = async (req: Request, res: Response) => {
+    deleteShopBookById = async (req: Request, res: Response) => {
         let response: any;
 
         try {
@@ -139,16 +139,9 @@ class ShopControllerMongo {
 
 }
 
-const GetAllShopBookMongo = ShopControllerMongo.getAllShopBook;
-const GetShopBookByIdMongo = ShopControllerMongo.getShopBookById;
-const InsertShopBookMongo = ShopControllerMongo.insertShopBook;
-const DeleteShopBookByIdMongo = ShopControllerMongo.deleteShopBookById
-const UpdateShopBookByIdMongo = ShopControllerMongo.updateShopBookById
+const shopController = new ShopControllerMongo
+
 export {
-    GetAllShopBookMongo,
-    GetShopBookByIdMongo,
-    InsertShopBookMongo,
-    DeleteShopBookByIdMongo,
-    UpdateShopBookByIdMongo
+    shopController
 }
 

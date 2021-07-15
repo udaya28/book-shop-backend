@@ -9,6 +9,7 @@ interface AuthorController {
     getAllBookByAuthorId(req: Request, res: Response): Promise<Response>
     getBookByAuthorId(req: Request, res: Response): Promise<Response>
     addBookByAuthorId(req: Request, res: Response): Promise<Response>
+    updateBookByAuthorIdAndAuthorId(req: Request, res: Response): Promise<Response>
     deleteBookByBookIdAndAuthorId(req: Request, res: Response): Promise<Response>
 }
 interface BookNew {
@@ -48,3 +49,4 @@ export {
     BookResult,
     AuthorController
 }
+

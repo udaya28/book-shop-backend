@@ -42,16 +42,16 @@ class App {
             {
                 useNewUrlParser: true,
                 useUnifiedTopology: true,
-                useFindAndModify: true,
                 useCreateIndex: true,
                 poolSize: Number(process.env.MONGODB_POOLSIZE),
                 keepAlive: true,
+                useFindAndModify: false
             })
     }
 
     public async listen() {
         try {
-            await Promise.all([this.createDefaultTables(),this.createDBConnection()])
+            await Promise.all([this.createDefaultTables(), this.createDBConnection()])
             console.log('Connected to MYSQL Database ...')
             console.log('Connected to MongoDb Database ...')
             this.app.listen(process.env.SERVER_PORT, () => {
@@ -60,7 +60,7 @@ class App {
         } catch (error) {
             console.log(error)
         }
-        
+
     }
 
     private routes() {

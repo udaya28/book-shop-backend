@@ -1,7 +1,8 @@
-import * as express from "express";
-import { GetAllBookMongo, InsertBookMongo, GetBookByIdMongo, DeleteBookByIdMongo, UpdateBookMongo } from "./controller/book.controller.mongo";
-import { GetAllShopBookMongo, DeleteShopBookByIdMongo, GetShopBookByIdMongo, InsertShopBookMongo, UpdateShopBookByIdMongo } from "./controller/shop.controller.mongo";
-
+import * as express from "express"; 
+import { bookController } from "./controller/book.controller.mongo";
+import { shopController } from "./controller/shop.controller.mongo";
+const { getAllBook, insertBook, getBookById, deleteBookById, updateBook } = bookController
+const { getAllShopBook, deleteShopBookById, getShopBookById, insertShopBook, updateShopBookById } = shopController
 class Mongo {
     public router: express.Router;
     constructor() {
@@ -11,17 +12,17 @@ class Mongo {
 
     private configRoutes() {
         console.log("MongoDb routes")
-        this.router.get('/book', GetAllBookMongo)
-        this.router.get('/book/:id', GetBookByIdMongo)
-        this.router.post('/book', InsertBookMongo)
-        this.router.patch('/book/:id', UpdateBookMongo)
-        this.router.delete('/book/:id', DeleteBookByIdMongo)
+        this.router.get('/book', getAllBook)
+        this.router.get('/book/:id', getBookById)
+        this.router.post('/book', insertBook)
+        this.router.patch('/book/:id', updateBook)
+        this.router.delete('/book/:id', deleteBookById)
 
-        this.router.get('/shop', GetAllShopBookMongo)
-        this.router.get('/shop/:id', GetShopBookByIdMongo)
-        this.router.post('/shop', InsertShopBookMongo)
-        this.router.patch('/shop/:id', UpdateShopBookByIdMongo)
-        this.router.delete('/shop/:id', DeleteShopBookByIdMongo)
+        this.router.get('/shop', getAllShopBook)
+        this.router.get('/shop/:id', getShopBookById)
+        this.router.post('/shop', insertShopBook)
+        this.router.patch('/shop/:id', updateShopBookById)
+        this.router.delete('/shop/:id', deleteShopBookById)
     }
 
 

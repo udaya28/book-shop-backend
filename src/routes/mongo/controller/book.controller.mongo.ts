@@ -7,8 +7,7 @@ import { isValidMongoId } from './../../../util/util';
 class BookControllerMongo {
     constructor() { }
 
-
-    public static getAllBook = async (req: Request, res: Response) => {
+    getAllBook = async (req: Request, res: Response) => {
         let response: any;
         try {
             const books: Array<BookMongo> = await BookDB.find({});
@@ -23,7 +22,7 @@ class BookControllerMongo {
         return res.send(response).status(200);
     }
 
-    public static getBookById = async (req: Request, res: Response) => {
+    getBookById = async (req: Request, res: Response) => {
         let response: any;
 
         try {
@@ -43,7 +42,7 @@ class BookControllerMongo {
         return res.send(response).status(200);
     }
 
-    public static insertBook = async (req: Request, res: Response) => {
+    insertBook = async (req: Request, res: Response) => {
         try {
             const { error } = ValidateInsertBookMongo(req.body)
             if (error) {
@@ -75,7 +74,7 @@ class BookControllerMongo {
         }
     }
 
-    public static updateBook = async (req: Request, res: Response) => {
+    updateBook = async (req: Request, res: Response) => {
         try {
             const { error } = ValidateInsertBookMongo(req.body)
             if (error) {
@@ -115,7 +114,7 @@ class BookControllerMongo {
         }
     }
 
-    public static deleteBookById = async (req: Request, res: Response) => {
+    deleteBookById = async (req: Request, res: Response) => {
         let response: any;
         try {
             const id = req.params.id;
@@ -136,17 +135,9 @@ class BookControllerMongo {
 
 }
 
-const GetAllBookMongo = BookControllerMongo.getAllBook;
-const GetBookByIdMongo = BookControllerMongo.getBookById;
-const InsertBookMongo = BookControllerMongo.insertBook;
-const UpdateBookMongo = BookControllerMongo.updateBook;
-const DeleteBookByIdMongo = BookControllerMongo.deleteBookById
+const bookController = new BookControllerMongo()
 
 export {
-    GetAllBookMongo,
-    InsertBookMongo,
-    GetBookByIdMongo,
-    DeleteBookByIdMongo,
-    UpdateBookMongo
+    bookController
 }
 
