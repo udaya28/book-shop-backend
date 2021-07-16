@@ -4,7 +4,7 @@ import { createResponse } from "./util";
 const handelError = (error: any): ApiResponse<any> => {
     console.log(error);
     let response: ApiResponse<any>;
-    const errorsArray: Array<string> = ['Invalid Mongo Id', 'Invalid Author Id', 'Author Name Already Exist']
+    const errorsArray: Array<string> = ['Invalid Mongo Id', 'Invalid Author Id', 'Author Name Already Exist', 'Book not present in the Author', 'No change in the Data']
     if ((error && error.message) && (errorsArray.some(err => err === error.message))) {
         response = createResponse(null, error.message)
     } else {

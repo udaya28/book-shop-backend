@@ -3,6 +3,10 @@ import { AuthorNew } from '../../routes/mongo-updated/interface';
 const { Schema } = mongoose;
 
 const BookMongoNew = new Schema({
+    _id:{
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+    },
     title: {
         type: String,
         required: true,
@@ -15,7 +19,7 @@ const BookMongoNew = new Schema({
         type: [String],
         required: true
     }
-}, { _id: false })
+})
 
 
 const AuthorMongoNew = new Schema({

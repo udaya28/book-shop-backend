@@ -7,12 +7,13 @@ interface AuthorController {
     updatedAuthorById(req: Request, res: Response): Promise<Response>
     deleteAuthorById(req: Request, res: Response): Promise<Response>
     getAllBookByAuthorId(req: Request, res: Response): Promise<Response>
-    getBookByAuthorId(req: Request, res: Response): Promise<Response>
-    addBookByAuthorId(req: Request, res: Response): Promise<Response>
-    updateBookByAuthorIdAndAuthorId(req: Request, res: Response): Promise<Response>
-    deleteBookByBookIdAndAuthorId(req: Request, res: Response): Promise<Response>
+    getBookByAuthorIdAndBookId(req: Request, res: Response): Promise<Response>
+    insertBookByAuthorId(req: Request, res: Response): Promise<Response>
+    updateBookByAuthorIdAndBookId(req: Request, res: Response): Promise<Response>
+    deleteBookByAuthorIdAndBookId(req: Request, res: Response): Promise<Response>
 }
 interface BookNew {
+    id?: string,
     title: string,
     publishedOn: string,
     genres: Array<string>
@@ -30,7 +31,7 @@ interface DeleteResult {
     n?: number;
     deletedCount?: number;
 }
-interface BookResult{
+interface BookResult {
     books?: {
         [key: string]: BookNew
     }

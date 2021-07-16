@@ -2,7 +2,7 @@ import { Response, Request } from 'express';
 import mongoose from 'mongoose';
 import { AuthorDBNew } from './../../../model/mongo-updated/authors.model.mongo';
 import { AuthorController, AuthorNew, BookResult } from './../interface'
-import { createResponse, fetchAuthorId, isValidAuthorName } from '../util';
+import { compareBookData, createResponse, fetchAuthorId, fetchBookByAuthorIdAndBookId, isValidAuthorName } from '../util';
 import { ApiResponse, DeleteResult } from '../interface';
 import { handelError } from '../handel-error';
 class AuthorUpdatedController implements AuthorController {
@@ -111,13 +111,13 @@ class AuthorUpdatedController implements AuthorController {
         return res.send(response).status(status);
     }
 
-    getBookByAuthorId = async (req: Request, res: Response): Promise<Response> => {
+    getBookByAuthorIdAndBookId = async (req: Request, res: Response): Promise<Response> => {
         let response: ApiResponse<any>;
         let status: number;
         try {
             const authorId = await fetchAuthorId(req)
-            const bookTitle: string = req.params.bookTitle || ""
-            const book: Array<BookResult> = await AuthorDBNew.find({ _id: authorId }, `-_id books.${bookTitle}`);
+            const bookId: string = req.params.bookId || ""
+            const book: Array<BookResult> = await AuthorDBNew.find({ _id: authorId }, `-_id books.${bookId}`);
             status = 200
             response = createResponse(book, 'Book Fetched')
         } catch (error) {
@@ -127,7 +127,7 @@ class AuthorUpdatedController implements AuthorController {
         return res.send(response).status(status);
     }
 
-    addBookByAuthorId = async (req: Request, res: Response): Promise<Response> => {
+    insertBookByAuthorId = async (req: Request, res: Response): Promise<Response> => {
         let response: ApiResponse<any>;
         let status: number;
         try {
@@ -135,7 +135,9 @@ class AuthorUpdatedController implements AuthorController {
             const title: string = req.body.data.title
             const publishedOn: string = req.body.data.publishedOn
             const genres: Array<string> = req.body.data.genres
-            const result = await AuthorDBNew.findOneAndUpdate({ _id: authorId }, { [`books.${title}`]: { title, publishedOn, genres } }, { new: true });
+            const bookId = mongoose.Types.ObjectId();
+            const data = { _id: bookId, title, publishedOn, genres }
+            const result = await AuthorDBNew.findOneAndUpdate({ _id: authorId }, { [`books.${bookId}`]: data }, { new: true });
             status = 200
             response = createResponse(result, 'Added Book to Author')
         } catch (error) {
@@ -145,21 +147,26 @@ class AuthorUpdatedController implements AuthorController {
         return res.send(response).status(status);
     }
 
-    updateBookByAuthorIdAndAuthorId = async (req: Request, res: Response): Promise<Response> => {
+    updateBookByAuthorIdAndBookId = async (req: Request, res: Response): Promise<Response> => {
         let response: ApiResponse<any>;
         let status: number;
         try {
             const authorId = await fetchAuthorId(req)
-            const bookTitle: string = req.params.bookTitle
-            const title: string = req.body.data.title
-            const publishedOn: string = req.body.data.publishedOn
-            const genres: Array<string> = req.body.data.genres
-            let data: any = {}
-            if (title) data['title'] = title;
-            if (publishedOn) data['publishedOn'] = publishedOn;
-            if (genres) data['genres'] = genres;
-            const result = await AuthorDBNew.findByIdAndUpdate({ _id: authorId }, { [`books.${title}`]: data  }, { new: true });
-            // const result = {}
+            const bookId: string = req.params.bookId
+            const newTitle: string = req.body.data.title
+            const newPublishedOn: string = req.body.data.publishedOn
+            const newGenres: Array<string> = req.body.data.genres
+            let newData: any = { _id: bookId }
+            if (newTitle) newData['title'] = newTitle;
+            if (newPublishedOn) newData['publishedOn'] = newPublishedOn;
+            if (newGenres) newData['genres'] = newGenres;
+            const book = await fetchBookByAuthorIdAndBookId(authorId, bookId)
+            compareBookData(newData, book)
+            newData = { ...book, ...newData }
+            const result = await AuthorDBNew.findByIdAndUpdate({ _id: authorId }, {
+                '$set': { [`books.${bookId}`]: newData }
+            }, { new: true });
+            // let result = {}
             status = 200
             response = createResponse(result, 'Added Book to Author')
         } catch (error) {
@@ -169,13 +176,13 @@ class AuthorUpdatedController implements AuthorController {
         return res.send(response).status(status);
     }
 
-    deleteBookByBookIdAndAuthorId = async (req: Request, res: Response): Promise<Response> => {
+    deleteBookByAuthorIdAndBookId = async (req: Request, res: Response): Promise<Response> => {
         let response: ApiResponse<any>;
         let status: number;
         try {
             const authorId = await fetchAuthorId(req)
-            const title: string = req.params.bookTitle
-            const result: DeleteResult = await AuthorDBNew.updateOne({ _id: authorId }, { $unset: { [`books.${title}`]: 1 } });
+            const bookId: string = req.params.bookId
+            const result: DeleteResult = await AuthorDBNew.updateOne({ _id: authorId }, { $unset: { [`books.${bookId}`]: 1 } });
             status = 200
             response = createResponse(result, 'Deleted a Book in Author')
         } catch (error) {
@@ -189,14 +196,4 @@ class AuthorUpdatedController implements AuthorController {
 const authorController = new AuthorUpdatedController()
 export default authorController
 
-/*
 
-1 reduce into function
-    const authorId: string = req.params.authorId
-    await isValidAuthorId(authorId)
-2 author name duplication validation
-3 return updated fields
-
-4 PUT for adding book
-
-*/
