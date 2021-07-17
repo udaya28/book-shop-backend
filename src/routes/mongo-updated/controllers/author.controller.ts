@@ -117,6 +117,7 @@ class AuthorUpdatedController implements AuthorController {
         try {
             const authorId = await fetchAuthorId(req)
             const bookId: string = req.params.bookId || ""
+            // validateBookNameOfAuthor()
             const book: Array<BookResult> = await AuthorDBNew.find({ _id: authorId }, `-_id books.${bookId}`);
             status = 200
             response = createResponse(book, 'Book Fetched')
@@ -166,7 +167,6 @@ class AuthorUpdatedController implements AuthorController {
             const result = await AuthorDBNew.findByIdAndUpdate({ _id: authorId }, {
                 '$set': { [`books.${bookId}`]: newData }
             }, { new: true });
-            // let result = {}
             status = 200
             response = createResponse(result, 'Added Book to Author')
         } catch (error) {
@@ -196,4 +196,6 @@ class AuthorUpdatedController implements AuthorController {
 const authorController = new AuthorUpdatedController()
 export default authorController
 
+// const validateBookNameOfAuthor = () => {
 
+// }

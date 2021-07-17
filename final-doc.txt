@@ -1,0 +1,328 @@
+
+FOLDER STRUCTURE
+|- src
+|   |- interface                          -> contains interfaces
+|   |- model        
+|       |- config                         -> configuration for DB
+|       |- mongo                          -> model of MongoDb
+|       |- mongo-updated                  -> model of MongoDb Updated
+|       |- mysql                          -> model of MySql
+|       |- createMySqlTable.ts            -> will create MySql Table at the starting of program
+|   |- routes
+|       |- mongo                         -> routes of MongoDb
+|       |   |- controller                -> controller for mongoDb
+|       |   |- validator                 -> validation for mongoDb
+|       |   |- mongo.router.ts           -> routes of mongoDb
+|       |- mongo-updated                 -> routes of Updated MongoDb
+|       |   |- controller                -> controller for updated mongoDb
+|       |   |- validator                 -> validation for updated mongoDb
+|       |   |- handel-error.ts           -> handel error util function for updated mongo
+|       |   |- interface.ts              -> interfaces of updated MongoDb
+|       |   |- mongo-updated.router.ts   -> routes of updated MongoDb
+|       |   |- util.ts                   -> util function for Updated MongoDb
+|       |- mysql                         -> routes of MySql
+|       |   |- controller                -> controller for MySql
+|       |   |- validator                 -> validation for MySql
+|       |   |- mysql.router.ts           -> contains routes of MySql
+|   |- validator                         -> contains validation
+|   |- app.ts
+|   |- server.ts
+|- .env
+|- package.json
+|- tsconfig.json
+
+
+
+DataBase Design MySql
+
+This is the structure of MySql DataBase 
+
+Store
+- id        - number    -> Primary key
+- bookId    - number    -> Foreign key of Books 
+- count     - number
+
+
+Books
+- id        - number    -> Primary key
+- title     - string
+- price     - number
+- authorId  - number    -> Foreign key of Authors
+
+
+Genres List
+- id        - number
+- bookId    - number    -> Foreign key of Books
+- genreId   - number    -> Foreign key of Genres
+
+
+Genres
+- id        - number    -> Primary key
+- genre     - string
+
+
+Authors
+- id        - number    -> Primary key
+- name      - string
+- country   - string
+
+Relations:
+    Store has one to many relation with Books
+    Books has many to one relation with Author
+    Books has many to many relation with Genres
+
+
+End Points  
+
+/mysql           -> MySql end point
+/mongo           -> MongoDb end point
+/mongo-updated   -> New MongoDb end point
+
+
+MySql End Points
+
+GET /shop
+GET /shop/id
+POST /shop
+PATCH /shop/id
+DELETE /shop/id
+
+
+GET /books
+GET /books/id
+POST /book
+PATCH /book/id
+DELETE /book/id
+
+
+GET /author
+GET /author/id
+POST /author
+PATCH /author/id
+DELETE /author/id
+
+
+GET /genre
+GET /genre/id
+POST /genre
+PATCH /genre/id
+DELETE /genre/id
+
+
+GET /genre-list
+GET /genre-list/id
+POST /genre-list
+DELETE /genre-list/id
+
+
+
+
+Old MongoDb Design
+
+Store
+{
+    "id"     : ObjectID("Store")
+    "bookId" : ObjectID("Reference to Book document")
+    "count"  : number
+}
+
+Books
+{
+    "id"        : ObjectID("Book")
+    "title"     : string
+    "price"     : number
+    "genre"     : string
+    
+}
+
+Author
+{
+    "name"      : string
+    "country"   : string
+    "book"      : []
+}
+
+
+
+MONGO API
+
+GET /store
+GET /store/id
+POST /store
+PATCH /store/id
+DELETE /store/id
+
+
+GET /books
+GET /books/id
+POST /book
+PATCH /book/id
+DELETE /book/id
+
+
+
+New MongoDb Design
+
+schema
+
+Authors
+{
+ "id"               : string
+ "authorName"       : string,
+ "authorCountry"    : string,
+ "books": {
+   "bookId" : {
+     "_id"          : string
+     "title"        : string,
+     "publishedOn"  : string,
+     "genres"       : ["g1", "g2"]
+    }
+ }
+}
+
+
+API'S
+
+GET /author/                                            - get all author with all books
+    - returns all the documents
+    - RESPONSE => [{
+        "id"               : string
+        "authorName"       : string,
+        "authorCountry"    : string,
+        "books": {
+          "bookId1" : {
+            "title"        : string,
+            "publishedOn"  : string,
+            "genres"       : ["g1", "g2"]
+           },
+           "bookId2" : { ... },
+           "bookId3" : { ... },
+           "bookIdN" : { ... },
+        }
+    },{...},{...},{...},{...}]
+
+
+GET /author/:authorId                                   - get a author with all books by author id
+    - returns single document with authorId
+    - RESPONSE => {
+        "id"               : string
+        "authorName"       : string,
+        "authorCountry"    : string,
+        "books": {
+          "bookId1" : {
+            "title"        : string,
+            "publishedOn"  : string,
+            "genres"       : ["g1", "g2"]
+           },
+           "bookId2" : { ... },
+           "bookId3" : { ... },
+           "bookIdN" : { ... },
+        }
+    }
+
+
+PUT /author                                            - create a author
+    - create a author
+    - PUT {
+        data:{
+            authorName:"",
+            authorCountry:"",
+        }
+    }
+    - RESPONSE {
+    "ResponseData": {
+        "_id": "",
+        "authorName": "",
+        "authorCountry": "",
+        "__v": 0
+    },
+    "ResponseMessage": "Author Created"
+    }
+
+
+PATCH /author/:authorId                                 - update a author by author id
+    - update a author
+    - PATCH {
+        data:{
+            authorName:"",
+            authorCountry:"",
+        }
+    }
+    - RESPONSE {
+    "ResponseData": {
+        "n": 1,
+        "nModified": 1,
+        "ok": 1
+    },
+    "ResponseMessage": "Author Updated"
+    }
+
+
+DELETE /author/:authorId                                - delete a author by author id
+    - delete a author with author id
+    - RESPONSE {
+    "ResponseData": {
+        "n": 1,
+        "ok": 1,
+        "deletedCount": 1
+    },
+    "ResponseMessage": "Author Deleted"
+    }
+    
+
+GET /author/:authorId/book/                             - get all book by author id
+    - returns all the book by a author 
+    - RESPONSE => {
+        "books": {
+          "bookId1" : {
+            "title"        : string,
+            "publishedOn"  : string,
+            "genres"       : ["g1", "g2"]
+           },
+           "bookId2" : { ... },
+           "bookId3" : { ... },
+           "bookIdN" : { ... },
+        }
+    }
+
+
+GET /author/:authorId/book/:bookId                   - get a book by author id and bookId
+    - returns a book by a author and title of book
+    - RESPONSE => {
+        "bookId" : {
+            "title"        : string,
+            "publishedOn"  : string,
+            "genres"       : ["g1", "g2"]
+           }
+    }
+
+
+PUT /author/:authorId/book/                            - create a book by author id
+    - add a book to author book list by author id
+    - PUT {
+        data:{
+            title:"",
+            publishedOn:"",
+            genres:[]
+        }
+    }
+    - RESPONSE {
+    "ResponseData": {
+        "_id": "",
+        "authorName": "",
+        "authorCountry": "",
+    },
+    "ResponseMessage": "Author Created"
+}
+
+
+DELETE /author/:authorId/book/:bookID                - delete a book by author id and bookID
+    - delete a book in author book list by author id and book title
+    - RESPONSE {
+    "ResponseData": {
+        "n": 1,
+        "nModified": 1,
+        "ok": 1
+    },
+    "ResponseMessage": "deleted a Book in Author"
+}
