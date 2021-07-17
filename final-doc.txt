@@ -1,4 +1,7 @@
 
+GITHUB LINK      -> https://github.com/udaya28/book-shop-backend
+POSTMAN LINK     -> https://www.getpostman.com/collections/6d7de0d9ad77c44ca8a2
+
 FOLDER STRUCTURE
 |- src
 |   |- interface                          -> contains interfaces
